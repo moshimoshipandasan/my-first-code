@@ -17,6 +17,13 @@
         --accent: #0f62fe;
         --border: rgba(0, 0, 0, 0.12);
         --muted: rgba(0, 0, 0, 0.6);
+        --palette-bb1-bg: #ffe5ec;
+        --palette-bb1-accent: #ff4d6d;
+        --palette-bbs2-bg: #e0f4ff;
+        --palette-bbs2-accent: #0096c7;
+        --palette-bbs3-bg: #e6f9f2;
+        --palette-bbs3-accent: #2bbbad;
+        --palette-shadow: 0 18px 35px rgba(31, 31, 31, 0.1);
       }
 
       @media (prefers-color-scheme: dark) {
@@ -26,6 +33,13 @@
           --card-bg: #181b23;
           --border: rgba(255, 255, 255, 0.12);
           --muted: rgba(255, 255, 255, 0.6);
+          --palette-bb1-bg: #42283a;
+          --palette-bb1-accent: #ff7990;
+          --palette-bbs2-bg: #183449;
+          --palette-bbs2-accent: #4dc0ff;
+          --palette-bbs3-bg: #1d3d31;
+          --palette-bbs3-accent: #4ce0b3;
+          --palette-shadow: 0 22px 40px rgba(0, 0, 0, 0.4);
         }
       }
 
@@ -130,43 +144,149 @@
         min-height: 1.25rem;
       }
 
-      .issues-grid {
+      .palette-board {
         display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .palette-column {
+        position: relative;
+        padding: 1.5rem 1.35rem 1.4rem;
+        border-radius: 1.25rem;
+        overflow: hidden;
+        box-shadow: var(--palette-shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        min-height: 320px;
+        border: 1px solid var(--border);
+        background: var(--card-bg);
+      }
+
+      .palette-column::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.6;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .palette-column:hover::before {
+        opacity: 0.75;
+      }
+
+      .palette-column--bb1::before {
+        background: radial-gradient(circle at 20% 20%, rgba(255, 77, 109, 0.35), transparent 70%),
+          linear-gradient(135deg, var(--palette-bb1-bg), rgba(255, 255, 255, 0.85));
+      }
+
+      .palette-column--bbs2::before {
+        background: radial-gradient(circle at 80% 10%, rgba(0, 150, 199, 0.35), transparent 70%),
+          linear-gradient(135deg, var(--palette-bbs2-bg), rgba(255, 255, 255, 0.85));
+      }
+
+      .palette-column--bbs3::before {
+        background: radial-gradient(circle at 15% 80%, rgba(43, 187, 173, 0.35), transparent 70%),
+          linear-gradient(135deg, var(--palette-bbs3-bg), rgba(255, 255, 255, 0.85));
+      }
+
+      .palette-column--other::before {
+        background: linear-gradient(135deg, rgba(128, 128, 128, 0.25), rgba(255, 255, 255, 0.85));
+      }
+
+      .palette-column-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.75rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .palette-column-header > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .palette-column-title {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .palette-column-caption {
+        margin: 0;
+        font-size: 0.75rem;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .palette-column-count {
+        font-size: 0.8rem;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+      }
+
+      .palette-column-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .palette-column-empty {
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+        text-align: center;
       }
 
       .issue-card {
-        background: var(--card-bg);
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 1rem;
-        border: 1px solid var(--border);
-        padding: 1.1rem 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        padding: 1.05rem 1.2rem;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        box-shadow: 0 10px 25px rgba(15, 17, 23, 0.08);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        gap: 0.65rem;
+        box-shadow: none;
+        backdrop-filter: blur(6px);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+        color: #1f1f1f;
       }
 
       .issue-card:hover,
       .issue-card:focus-within {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 30px rgba(15, 17, 23, 0.12);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px rgba(31, 31, 31, 0.18);
+        border-color: rgba(15, 17, 23, 0.12);
       }
 
       .issue-title {
         margin: 0;
-        font-size: 1rem;
-        font-weight: 650;
-        line-height: 1.4;
+        font-size: 1.02rem;
+        font-weight: 680;
+        line-height: 1.35;
+      }
+
+      .issue-title a {
+        color: inherit;
       }
 
       .issue-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem 1rem;
+        gap: 0.45rem 0.9rem;
         font-size: 0.82rem;
-        color: var(--muted);
+        color: rgba(31, 31, 31, 0.7);
+        letter-spacing: 0.02em;
       }
 
       .issue-body {
@@ -174,29 +294,71 @@
         font-size: 0.92rem;
         white-space: pre-wrap;
         word-break: break-word;
+        line-height: 1.7;
       }
 
       .labels {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.35rem;
       }
 
       .label-pill {
         display: inline-flex;
         align-items: center;
-        padding: 0.15rem 0.55rem;
+        padding: 0.18rem 0.6rem;
         border-radius: 999px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
+        letter-spacing: 0.05em;
+        background: rgba(31, 31, 31, 0.08);
         color: #1f1f1f;
-        background: rgba(0, 0, 0, 0.08);
+      }
+
+      .label-pill--primary {
+        background: rgba(31, 31, 31, 0.2);
       }
 
       @media (prefers-color-scheme: dark) {
+        .palette-column {
+          border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .palette-column::before {
+          opacity: 0.55;
+        }
+
+        .palette-column:hover::before {
+          opacity: 0.7;
+        }
+
+        .issue-card {
+          background: rgba(24, 27, 35, 0.85);
+          border-color: rgba(255, 255, 255, 0.12);
+          color: #e6e6ea;
+        }
+
+        .issue-card:hover,
+        .issue-card:focus-within {
+          border-color: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 18px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .issue-meta {
+          color: rgba(230, 230, 234, 0.7);
+        }
+
         .label-pill {
-          color: #10121a;
-          background: rgba(255, 255, 255, 0.6);
+          background: rgba(230, 230, 234, 0.15);
+          color: #e6e6ea;
+        }
+
+        .label-pill--primary {
+          background: rgba(230, 230, 234, 0.3);
+        }
+
+        .palette-column-caption {
+          color: rgba(230, 230, 234, 0.7);
         }
       }
 
@@ -238,7 +400,7 @@
     </header>
     <main>
       <div class="status-bar" id="statusBar">読み込み中...</div>
-      <section class="issues-grid" id="issuesGrid" aria-live="polite"></section>
+      <section class="palette-board" id="issuesGrid" aria-live="polite"></section>
       <div class="empty-state" id="emptyState" hidden>
         まだ Issue はありません。上の「Issue を投稿する」ボタンから最初の投稿をしてみましょう。
       </div>
@@ -285,7 +447,42 @@
         }
         emptyState.hidden = true;
 
+        const paletteColumns = [
+          { key: "bb1", title: "BB1", caption: "タグ: bb1" },
+          { key: "bbs2", title: "BBS2", caption: "タグ: bbs2" },
+          { key: "bbs3", title: "BBS3", caption: "タグ: bbs3" },
+        ];
+
+        const groups = { other: [] };
+        paletteColumns.forEach(({ key }) => {
+          groups[key] = [];
+        });
+
+        const normalizeLabel = (label) => {
+          if (typeof label === "string") return label;
+          if (label && typeof label.name === "string") return label.name;
+          return "";
+        };
+
         issues.forEach((issue) => {
+          const labelNames = Array.isArray(issue.labels)
+            ? issue.labels
+                .map((label) => normalizeLabel(label).trim())
+                .filter((name) => name.length > 0)
+            : [];
+
+          const normalized = labelNames.map((name) => name.toLowerCase());
+          const matchedColumn = paletteColumns.find((column) =>
+            normalized.includes(column.key)
+          );
+          const bucketKey = matchedColumn ? matchedColumn.key : "other";
+
+          groups[bucketKey].push({ issue, labelNames, bucketKey });
+        });
+
+        issuesGrid.innerHTML = "";
+
+        const createIssueCard = ({ issue, labelNames, bucketKey }) => {
           const card = document.createElement("article");
           card.className = "issue-card";
 
@@ -307,34 +504,94 @@
             <span>コメント: ${issue.comments}</span>
           `;
 
-          const body = document.createElement("p");
-          body.className = "issue-body";
-          body.textContent = issue.body ?? "";
-
           card.appendChild(title);
           card.appendChild(meta);
 
-          if (Array.isArray(issue.labels) && issue.labels.length) {
+          if (labelNames.length) {
             const labelsWrapper = document.createElement("div");
             labelsWrapper.className = "labels";
-            issue.labels.forEach((label) => {
+            labelNames.forEach((name) => {
               const pill = document.createElement("span");
-              pill.className = "label-pill";
-              pill.textContent =
-                typeof label === "string"
-                  ? label
-                  : label.name ?? "(no label)";
+              const isPrimary = name.toLowerCase() === bucketKey.toLowerCase();
+              pill.className = `label-pill${
+                isPrimary ? " label-pill--primary" : ""
+              }`;
+              pill.textContent = name;
               labelsWrapper.appendChild(pill);
             });
             card.appendChild(labelsWrapper);
           }
 
           if (issue.body) {
+            const body = document.createElement("p");
+            body.className = "issue-body";
+            body.textContent = issue.body ?? "";
             card.appendChild(body);
           }
 
-          issuesGrid.appendChild(card);
+          return card;
+        };
+
+        paletteColumns.forEach((column) => {
+          const columnSection = document.createElement("section");
+          columnSection.className = `palette-column palette-column--${column.key}`;
+          columnSection.dataset.label = column.key;
+
+          const header = document.createElement("div");
+          header.className = "palette-column-header";
+          header.innerHTML = `
+            <div>
+              <h2 class="palette-column-title">${column.title}</h2>
+              <p class="palette-column-caption">${column.caption}</p>
+            </div>
+            <span class="palette-column-count">${groups[column.key].length} 件</span>
+          `;
+
+          const body = document.createElement("div");
+          body.className = "palette-column-body";
+
+          if (groups[column.key].length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "palette-column-empty";
+            empty.textContent = "まだ投稿はありません。";
+            body.appendChild(empty);
+          } else {
+            groups[column.key].forEach((entry) => {
+              body.appendChild(createIssueCard(entry));
+            });
+          }
+
+          columnSection.appendChild(header);
+          columnSection.appendChild(body);
+          issuesGrid.appendChild(columnSection);
         });
+
+        if (groups.other.length) {
+          const otherSection = document.createElement("section");
+          otherSection.className = "palette-column palette-column--other";
+          otherSection.dataset.label = "other";
+
+          const header = document.createElement("div");
+          header.className = "palette-column-header";
+          header.innerHTML = `
+            <div>
+              <h2 class="palette-column-title">Other</h2>
+              <p class="palette-column-caption">タグ: その他</p>
+            </div>
+            <span class="palette-column-count">${groups.other.length} 件</span>
+          `;
+
+          const body = document.createElement("div");
+          body.className = "palette-column-body";
+
+          groups.other.forEach((entry) => {
+            body.appendChild(createIssueCard(entry));
+          });
+
+          otherSection.appendChild(header);
+          otherSection.appendChild(body);
+          issuesGrid.appendChild(otherSection);
+        }
       };
 
       const fetchIssues = async () => {
