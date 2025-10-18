@@ -131,9 +131,9 @@
       }
 
       .issues-grid {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       }
 
       .issue-card {
@@ -217,24 +217,6 @@
   </head>
   <body>
     <header>
-      <h1 class="headline">my-first-code 掲示板ログ</h1>
-      <p class="lede">
-        このページは GitHub Issues を掲示板ログとして表示します。投稿するときは
-        GitHub の Issue 画面から行ってください。
-      </p>
-      <div class="actions">
-        <a
-          class="primary-button"
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/moshimoshipandasan/my-first-code/issues/new"
-        >
-          Issue を投稿する
-        </a>
-        <button class="secondary-button" type="button" id="refreshButton">
-          最新のログを読み込む
-        </button>
-      </div>
     </header>
     <main>
       <div class="status-bar" id="statusBar">読み込み中...</div>
@@ -363,9 +345,11 @@
         }
       };
 
-      refreshButton.addEventListener("click", () => {
-        fetchIssues();
-      });
+      if (refreshButton) {
+        refreshButton.addEventListener("click", () => {
+          fetchIssues();
+        });
+      }
 
       document.addEventListener("DOMContentLoaded", () => {
         fetchIssues();
