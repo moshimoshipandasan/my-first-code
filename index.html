@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>my-first-code 掲示板ログ</title>
+    <meta
+      name="description"
+      content="GitHub Issues を掲示板ログとして表示します。投稿は GitHub Issue 画面から行ってください。"
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f7f9;
+        --fg: #1f1f1f;
+        --card-bg: #ffffff;
+        --accent: #0f62fe;
+        --border: rgba(0, 0, 0, 0.12);
+        --muted: rgba(0, 0, 0, 0.6);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f1117;
+          --fg: #e6e6ea;
+          --card-bg: #181b23;
+          --border: rgba(255, 255, 255, 0.12);
+          --muted: rgba(255, 255, 255, 0.6);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic",
+          sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        line-height: 1.6;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      a:hover,
+      a:focus-visible {
+        text-decoration: underline;
+      }
+
+      header {
+        padding: 1.5rem 1rem 1rem;
+      }
+
+      main {
+        width: min(960px, 100%);
+        margin: 0 auto;
+        padding: 0 1rem 2.5rem;
+      }
+
+      .headline {
+        margin: 0 0 0.5rem;
+        font-size: clamp(1.5rem, 4vw, 2.25rem);
+        font-weight: 700;
+      }
+
+      .lede {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .primary-button,
+      .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease,
+          border-color 0.15s ease;
+      }
+
+      .primary-button {
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .primary-button:hover,
+      .primary-button:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(15, 98, 254, 0.2);
+      }
+
+      .secondary-button {
+        background: var(--card-bg);
+        border-color: var(--border);
+        color: inherit;
+      }
+
+      .secondary-button:hover,
+      .secondary-button:focus-visible {
+        transform: translateY(-1px);
+        border-color: var(--accent);
+      }
+
+      .status-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+        min-height: 1.25rem;
+      }
+
+      .issues-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+
+      .issue-card {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        box-shadow: 0 10px 25px rgba(15, 17, 23, 0.08);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .issue-card:hover,
+      .issue-card:focus-within {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px rgba(15, 17, 23, 0.12);
+      }
+
+      .issue-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 650;
+        line-height: 1.4;
+      }
+
+      .issue-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+
+      .issue-body {
+        margin: 0;
+        font-size: 0.92rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .labels {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      .label-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #1f1f1f;
+        background: rgba(0, 0, 0, 0.08);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .label-pill {
+          color: #10121a;
+          background: rgba(255, 255, 255, 0.6);
+        }
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+        padding: 1.5rem 0;
+      }
+
+      footer {
+        padding: 2rem 1rem 3rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 class="headline">my-first-code 掲示板ログ</h1>
+      <p class="lede">
+        このページは GitHub Issues を掲示板ログとして表示します。投稿するときは
+        GitHub の Issue 画面から行ってください。
+      </p>
+      <div class="actions">
+        <a
+          class="primary-button"
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/moshimoshipandasan/my-first-code/issues/new"
+        >
+          Issue を投稿する
+        </a>
+        <button class="secondary-button" type="button" id="refreshButton">
+          最新のログを読み込む
+        </button>
+      </div>
+    </header>
+    <main>
+      <div class="status-bar" id="statusBar">読み込み中...</div>
+      <section class="issues-grid" id="issuesGrid" aria-live="polite"></section>
+      <div class="empty-state" id="emptyState" hidden>
+        まだ Issue はありません。上の「Issue を投稿する」ボタンから最初の投稿をしてみましょう。
+      </div>
+    </main>
+    <footer>
+      更新は GitHub API（60 リクエスト/時）に依存します。アクセスが集中すると読み込みに時間がかかる場合があります。
+    </footer>
+    <script>
+      const repoOwner = "moshimoshipandasan";
+      const repoName = "my-first-code";
+      const issuesGrid = document.getElementById("issuesGrid");
+      const statusBar = document.getElementById("statusBar");
+      const emptyState = document.getElementById("emptyState");
+      const refreshButton = document.getElementById("refreshButton");
+
+      const formatDate = (isoString) => {
+        const date = new Date(isoString);
+        if (Number.isNaN(date.getTime())) return "日時不明";
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}-${String(date.getDate()).padStart(2, "0")} ${String(
+          date.getHours()
+        ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+      };
+
+      const stateBadge = (state) => {
+        if (state === "open") return "公開中";
+        if (state === "closed") return "クローズ済み";
+        return state;
+      };
+
+      const clearIssues = () => {
+        while (issuesGrid.firstChild) {
+          issuesGrid.removeChild(issuesGrid.firstChild);
+        }
+      };
+
+      const renderIssues = (issues) => {
+        clearIssues();
+        if (!Array.isArray(issues) || issues.length === 0) {
+          emptyState.hidden = false;
+          return;
+        }
+        emptyState.hidden = true;
+
+        issues.forEach((issue) => {
+          const card = document.createElement("article");
+          card.className = "issue-card";
+
+          const title = document.createElement("h2");
+          title.className = "issue-title";
+          const titleLink = document.createElement("a");
+          titleLink.href = issue.html_url;
+          titleLink.target = "_blank";
+          titleLink.rel = "noopener noreferrer";
+          titleLink.textContent = `#${issue.number} ${issue.title}`;
+          title.appendChild(titleLink);
+
+          const meta = document.createElement("div");
+          meta.className = "issue-meta";
+          meta.innerHTML = `
+            <span>${stateBadge(issue.state)}</span>
+            <span>作成: ${issue.user?.login ?? "不明"}</span>
+            <span>更新: ${formatDate(issue.updated_at)}</span>
+            <span>コメント: ${issue.comments}</span>
+          `;
+
+          const body = document.createElement("p");
+          body.className = "issue-body";
+          body.textContent = issue.body ?? "";
+
+          card.appendChild(title);
+          card.appendChild(meta);
+
+          if (Array.isArray(issue.labels) && issue.labels.length) {
+            const labelsWrapper = document.createElement("div");
+            labelsWrapper.className = "labels";
+            issue.labels.forEach((label) => {
+              const pill = document.createElement("span");
+              pill.className = "label-pill";
+              pill.textContent =
+                typeof label === "string"
+                  ? label
+                  : label.name ?? "(no label)";
+              labelsWrapper.appendChild(pill);
+            });
+            card.appendChild(labelsWrapper);
+          }
+
+          if (issue.body) {
+            card.appendChild(body);
+          }
+
+          issuesGrid.appendChild(card);
+        });
+      };
+
+      const fetchIssues = async () => {
+        statusBar.textContent = "読み込み中...";
+        statusBar.style.color = "";
+        try {
+          const response = await fetch(
+            `https://api.github.com/repos/${repoOwner}/${repoName}/issues?state=all&per_page=30&sort=created&direction=desc`
+          );
+
+          if (!response.ok) {
+            throw new Error(
+              `GitHub API の呼び出しに失敗しました (${response.status})`
+            );
+          }
+
+          const data = await response.json();
+          renderIssues(data);
+          statusBar.textContent = `最新 ${data.length} 件を表示中`;
+        } catch (error) {
+          clearIssues();
+          emptyState.hidden = true;
+          statusBar.textContent = "読み込みに失敗しました。時間をおいて再度お試しください。";
+          statusBar.style.color = "#d9534f";
+          console.error(error);
+        }
+      };
+
+      refreshButton.addEventListener("click", () => {
+        fetchIssues();
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchIssues();
+      });
+    </script>
+  </body>
+</html>
