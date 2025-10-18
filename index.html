@@ -10,23 +10,15 @@
     />
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #f7f7f9;
-        --fg: #1f1f1f;
-        --card-bg: #ffffff;
-        --accent: #0f62fe;
-        --border: rgba(0, 0, 0, 0.12);
-        --muted: rgba(0, 0, 0, 0.6);
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0f1117;
-          --fg: #e6e6ea;
-          --card-bg: #181b23;
-          --border: rgba(255, 255, 255, 0.12);
-          --muted: rgba(255, 255, 255, 0.6);
-        }
+        color-scheme: dark;
+        --bg: #050309;
+        --fg: #f5e8f0;
+        --card-bg: rgba(15, 9, 21, 0.92);
+        --accent: #d7263d;
+        --border: rgba(215, 38, 61, 0.4);
+        --muted: rgba(245, 232, 240, 0.65);
+        --glow: rgba(215, 38, 61, 0.3);
+        --shadow: 0 0 45px rgba(215, 38, 61, 0.18);
       }
 
       * {
@@ -35,25 +27,70 @@
 
       body {
         margin: 0;
-        font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic",
-          sans-serif;
-        background: var(--bg);
+        font-family: "Yu Mincho", "Hiragino Mincho ProN", "Times New Roman",
+          serif;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(215, 38, 61, 0.18), transparent 55%),
+          radial-gradient(circle at 80% 10%, rgba(118, 0, 0, 0.22), transparent 50%),
+          radial-gradient(circle at 50% 100%, rgba(104, 0, 26, 0.3), transparent 45%),
+          #050309;
         color: var(--fg);
-        line-height: 1.6;
+        line-height: 1.7;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          repeating-linear-gradient(
+            120deg,
+            transparent 0,
+            transparent 12px,
+            rgba(0, 0, 0, 0.12) 12px,
+            rgba(0, 0, 0, 0.12) 14px
+          ),
+          radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02), transparent 60%);
+        mix-blend-mode: screen;
+        opacity: 0.18;
+        z-index: 0;
       }
 
       a {
         color: var(--accent);
         text-decoration: none;
+        text-shadow: 0 0 8px rgba(215, 38, 61, 0.4);
       }
 
       a:hover,
       a:focus-visible {
         text-decoration: underline;
+        text-shadow: 0 0 12px rgba(215, 38, 61, 0.7);
+      }
+
+      header,
+      main,
+      footer {
+        position: relative;
+        z-index: 1;
       }
 
       header {
-        padding: 1.5rem 1rem 1rem;
+        padding: 2.5rem 1rem 1.5rem;
+        text-align: center;
+        isolation: isolate;
+      }
+
+      header::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 0%, rgba(215, 38, 61, 0.25), transparent 65%);
+        filter: blur(12px);
+        z-index: -1;
       }
 
       main {
@@ -62,23 +99,59 @@
         padding: 0 1rem 2.5rem;
       }
 
+      @keyframes headline-flicker {
+        0%,
+        18%,
+        22%,
+        25%,
+        53%,
+        57%,
+        100% {
+          opacity: 1;
+        }
+        20%,
+        24%,
+        55% {
+          opacity: 0.45;
+        }
+        21%,
+        56% {
+          opacity: 0.2;
+        }
+      }
+
       .headline {
-        margin: 0 0 0.5rem;
-        font-size: clamp(1.5rem, 4vw, 2.25rem);
+        margin: 0 0 0.75rem;
+        font-size: clamp(1.75rem, 5vw, 2.75rem);
         font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--fg);
+        text-shadow: 0 0 18px rgba(215, 38, 61, 0.55), 0 0 6px rgba(0, 0, 0, 0.6);
+        animation: headline-flicker 6s infinite;
+      }
+
+      .headline-icon {
+        display: inline-block;
+        margin-right: 0.5rem;
+        font-size: 1.2em;
+        filter: drop-shadow(0 0 12px rgba(215, 38, 61, 0.75));
+        transform: translateY(2px);
       }
 
       .lede {
-        margin: 0 0 1rem;
+        margin: 0 0 1.25rem;
         color: var(--muted);
-        font-size: 0.95rem;
+        font-size: 1rem;
+        font-style: italic;
       }
 
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.75rem;
+        justify-content: center;
       }
 
       .primary-button,
@@ -87,93 +160,131 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        padding: 0.75rem 1rem;
-        border-radius: 0.75rem;
+        padding: 0.9rem 1.2rem;
+        border-radius: 999px;
+        font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", "BIZ UDPGothic",
+          sans-serif;
         font-weight: 600;
         font-size: 0.95rem;
         border: 1px solid transparent;
         cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease,
-          border-color 0.15s ease;
+        letter-spacing: 0.07em;
+        transition: transform 0.2s ease, box-shadow 0.2s ease,
+          border-color 0.2s ease, background 0.2s ease;
       }
 
       .primary-button {
-        background: var(--accent);
-        color: #ffffff;
+        background: linear-gradient(135deg, rgba(215, 38, 61, 0.85), rgba(118, 0, 0, 0.9));
+        color: #fdf5f7;
+        box-shadow: 0 0 18px var(--glow);
       }
 
       .primary-button:hover,
       .primary-button:focus-visible {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 20px rgba(15, 98, 254, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 0 26px rgba(215, 38, 61, 0.5);
       }
 
       .secondary-button {
-        background: var(--card-bg);
-        border-color: var(--border);
-        color: inherit;
+        background: rgba(5, 3, 9, 0.55);
+        border-color: rgba(215, 38, 61, 0.35);
+        color: var(--fg);
       }
 
       .secondary-button:hover,
       .secondary-button:focus-visible {
-        transform: translateY(-1px);
-        border-color: var(--accent);
+        transform: translateY(-2px);
+        border-color: rgba(215, 38, 61, 0.75);
+        box-shadow: 0 0 18px rgba(215, 38, 61, 0.35);
       }
 
       .status-bar {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: var(--muted);
+        color: rgba(245, 232, 240, 0.7);
         font-size: 0.85rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.75rem;
         min-height: 1.25rem;
+        letter-spacing: 0.05em;
       }
 
       .issues-grid {
         display: grid;
-        gap: 1rem;
+        gap: 1.2rem;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       }
 
       .issue-card {
         background: var(--card-bg);
         border-radius: 1rem;
-        border: 1px solid var(--border);
-        padding: 1.1rem 1.25rem;
+        border: 1px solid rgba(215, 38, 61, 0.25);
+        padding: 1.2rem 1.35rem;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        box-shadow: 0 10px 25px rgba(15, 17, 23, 0.08);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        gap: 0.85rem;
+        box-shadow: var(--shadow);
+        transition: transform 0.25s ease, box-shadow 0.25s ease,
+          border 0.25s ease, background 0.25s ease;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(2px);
       }
 
       .issue-card:hover,
       .issue-card:focus-within {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 30px rgba(15, 17, 23, 0.12);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 0 26px rgba(215, 38, 61, 0.35);
+        border-color: rgba(215, 38, 61, 0.7);
+        background: rgba(18, 10, 26, 0.96);
+      }
+
+      .issue-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 15% 15%, rgba(215, 38, 61, 0.18), transparent 55%),
+          radial-gradient(circle at 85% 20%, rgba(104, 0, 26, 0.22), transparent 50%);
+        opacity: 0.85;
+        z-index: 0;
+        transition: opacity 0.25s ease;
+      }
+
+      .issue-card:hover::before,
+      .issue-card:focus-within::before {
+        opacity: 1;
+      }
+
+      .issue-card > * {
+        position: relative;
+        z-index: 1;
       }
 
       .issue-title {
         margin: 0;
-        font-size: 1rem;
-        font-weight: 650;
+        font-size: 1.05rem;
+        font-weight: 700;
         line-height: 1.4;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
       }
 
       .issue-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem 1rem;
-        font-size: 0.82rem;
-        color: var(--muted);
+        gap: 0.6rem 1.1rem;
+        font-size: 0.85rem;
+        color: rgba(245, 232, 240, 0.75);
+        letter-spacing: 0.03em;
       }
 
       .issue-body {
         margin: 0;
-        font-size: 0.92rem;
-        white-space: pre-wrap;
+        font-size: 0.96rem;
+        white-space: pre-line;
         word-break: break-word;
+        color: rgba(245, 232, 240, 0.9);
+        line-height: 1.8;
       }
 
       .labels {
@@ -185,42 +296,42 @@
       .label-pill {
         display: inline-flex;
         align-items: center;
-        padding: 0.15rem 0.55rem;
+        padding: 0.2rem 0.6rem;
         border-radius: 999px;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         font-weight: 600;
-        color: #1f1f1f;
-        background: rgba(0, 0, 0, 0.08);
-      }
-
-      @media (prefers-color-scheme: dark) {
-        .label-pill {
-          color: #10121a;
-          background: rgba(255, 255, 255, 0.6);
-        }
+        letter-spacing: 0.05em;
+        color: rgba(245, 232, 240, 0.9);
+        background: rgba(118, 0, 0, 0.55);
+        border: 1px solid rgba(215, 38, 61, 0.55);
+        text-transform: uppercase;
       }
 
       .empty-state {
         text-align: center;
-        color: var(--muted);
-        font-size: 0.95rem;
-        padding: 1.5rem 0;
+        color: rgba(245, 232, 240, 0.7);
+        font-size: 1rem;
+        padding: 1.8rem 0;
+        letter-spacing: 0.06em;
       }
 
       footer {
-        padding: 2rem 1rem 3rem;
+        padding: 2.5rem 1rem 3rem;
         text-align: center;
-        font-size: 0.8rem;
-        color: var(--muted);
+        font-size: 0.82rem;
+        color: rgba(245, 232, 240, 0.55);
+        letter-spacing: 0.05em;
       }
     </style>
   </head>
   <body>
     <header>
-      <h1 class="headline">my-first-code 掲示板ログ</h1>
+      <h1 class="headline">
+        <span class="headline-icon" aria-hidden="true">☠</span> my-first-code 闇夜録
+      </h1>
       <p class="lede">
-        このページは GitHub Issues を掲示板ログとして表示します。投稿するときは
-        GitHub の Issue 画面から行ってください。
+        GitHub Issues に刻まれた囁きと叫びを、この呪われた掲示板に召喚します。
+        新たな儀式を執り行うときは GitHub の Issue 画面から扉を開いてください。
       </p>
       <div class="actions">
         <a
@@ -229,22 +340,22 @@
           rel="noopener noreferrer"
           href="https://github.com/moshimoshipandasan/my-first-code/issues/new"
         >
-          Issue を投稿する
+          儀式を開始する
         </a>
         <button class="secondary-button" type="button" id="refreshButton">
-          最新のログを読み込む
+          最新の怨念を召喚
         </button>
       </div>
     </header>
     <main>
-      <div class="status-bar" id="statusBar">読み込み中...</div>
+      <div class="status-bar" id="statusBar">霊波を検知中...</div>
       <section class="issues-grid" id="issuesGrid" aria-live="polite"></section>
       <div class="empty-state" id="emptyState" hidden>
-        まだ Issue はありません。上の「Issue を投稿する」ボタンから最初の投稿をしてみましょう。
+        まだ魂の記録は降りてきていません。上の「儀式を開始する」から最初の呪文を唱えてください。
       </div>
     </main>
     <footer>
-      更新は GitHub API（60 リクエスト/時）に依存します。アクセスが集中すると読み込みに時間がかかる場合があります。
+      霊界との通信は GitHub API（60 リクエスト/時）に縛られています。門が重く閉ざされていたら、しばし闇夜で待ちましょう。
     </footer>
     <script>
       const repoOwner = "moshimoshipandasan";
@@ -266,8 +377,8 @@
       };
 
       const stateBadge = (state) => {
-        if (state === "open") return "公開中";
-        if (state === "closed") return "クローズ済み";
+        if (state === "open") return "覚醒中";
+        if (state === "closed") return "封印済み";
         return state;
       };
 
@@ -338,7 +449,7 @@
       };
 
       const fetchIssues = async () => {
-        statusBar.textContent = "読み込み中...";
+        statusBar.textContent = "霊波を検知中...";
         statusBar.style.color = "";
         try {
           const response = await fetch(
@@ -353,12 +464,12 @@
 
           const data = await response.json();
           renderIssues(data);
-          statusBar.textContent = `最新 ${data.length} 件を表示中`;
+          statusBar.textContent = `最新 ${data.length} 件の怨念を記録中`;
         } catch (error) {
           clearIssues();
           emptyState.hidden = true;
-          statusBar.textContent = "読み込みに失敗しました。時間をおいて再度お試しください。";
-          statusBar.style.color = "#d9534f";
+          statusBar.textContent = "霊界との接続が途絶えました。しばらく待ってから再召喚してください。";
+          statusBar.style.color = "var(--accent)";
           console.error(error);
         }
       };
