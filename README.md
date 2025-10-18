@@ -1,7 +1,3 @@
-# my-first-code
-はじめてのコード  
-よろしくね
-
 ## 掲示板ログアプリについて
 GitHub Issues を掲示板の投稿ログとして一覧表示するモバイル対応アプリです。  
 公開ページ: https://moshimoshipandasan.github.io/my-first-code/
